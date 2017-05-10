@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Young Family Blog</title>
+
+	<link rel="stylesheet" type="text/css" href="/static/main.css" />
+</head>
+
+<body>
+	<a class="main-title" href="/">
+		Young Family Blog
+	</a>
+	<div id="nav">
+		<div class="login">
+			<h3><a href="/login" class="login-link">Login/Register</a></h3>
+		</div>
+
+		<div class="newpost">
+			<h3><a href="/newpost" class="login-link">New Post</a></h3>
+		</div>
+
+		<div class="logout">
+			<h3><a href="/logout" class="login-link">Logout</a></h3>
+		</div>
+	<hr>
+	<div id="content">
+	{% block content %}
+	{% endblock %}
+	</div>
+</body>
+
+</html>
