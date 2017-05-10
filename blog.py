@@ -77,6 +77,7 @@ class Post(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	last_modified = db.DateTimeProperty(auto_now = True)
 	created_by = db.StringProperty()
+	created_by_id = db.StringProperty()
 
 	def render_str(self, template, **params):
 		t = jinja_env.get_template(template)
@@ -250,14 +251,16 @@ class Newpost(BlogHandler):
 			self.render("newpost.html")
 		else:
 			msg = "You must be logged in to create a post"
-			self.render("login.html", error_login = msg)
+			self.redirect("/login")
 	def post(self):
 		subject = self.request.get("subject")
 		content = self.request.get("content")
-		created_by = self.request.cookies.get("user_id").split("|")[0]
+		user_id = self.request.cookies.get("user_id").split("|")[0]
+		user_key = db.Key.from_path('User', long(user_id), parent=users_key())
+		user = db.get(user_key)
 
 		if subject and content:
-			p = Post(parent = blog_key(), subject = subject, content = content, created_by = created_by)
+			p = Post(parent = blog_key(), subject = subject, content = content, created_by = str(user.name), created_by_id = user_id)
 			p.put()
 			self.redirect("/%s" % str(p.key().id()))
 		else:
@@ -277,7 +280,7 @@ class Welcome(BlogHandler):
 
 class Login(BlogHandler):
 	def get(self):
-		self.render("login.html")
+		self.render("login.html")		
 
 	def post(self):
 		username = self.request.get("username")

@@ -140,9 +140,16 @@ input[type=submit] {
 .post-date {
 	position: absolute;
 	right: 0px;
-	bottom: 0px;
+	bottom: 15px;
 	color: #999;
 
+}
+
+.created_by {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	color: #999;
 }
 
 .post-content {
