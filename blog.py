@@ -246,14 +246,18 @@ class Signup(BlogHandler):
 
 class Newpost(BlogHandler):
 	def get(self):
-		self.render("newpost.html")
-
+		if self.read_secure_cookie("user_id"):
+			self.render("newpost.html")
+		else:
+			msg = "You must be logged in to create a post"
+			self.render("login.html", error_login = msg)
 	def post(self):
 		subject = self.request.get("subject")
 		content = self.request.get("content")
+		created_by = self.request.cookies.get("user_id").split("|")[0]
 
 		if subject and content:
-			p = Post(parent = blog_key(), subject = subject, content = content)
+			p = Post(parent = blog_key(), subject = subject, content = content, created_by = created_by)
 			p.put()
 			self.redirect("/%s" % str(p.key().id()))
 		else:
@@ -291,7 +295,7 @@ class Login(BlogHandler):
 class Logout(BlogHandler):
 	def get(self):
 		self.logout()
-		self.redirect('/signup')
+		self.redirect('/login')
 
 app = webapp2.WSGIApplication([('/', BlogFront),
 							   ('/signup', Signup),
